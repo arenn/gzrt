@@ -1,0 +1,25 @@
+New for release 06. (2012-02-09)
+  o Patches from Paul Wise (pabs@debian.org) for stability and memory leaks
+
+New for release 0.5 (2006-08-29)
+  Including public domain contributions from Paul Wise 
+  o Modify Makefile to append CFLAGS and LDFLAGS
+  o Modify error handling to suppress gcc warnings
+  o Include man page
+  o Minor typo/documentation changes
+
+New for release 0.4 (2005-11-12)
+  o Discontinue tar patch (replaced by out of the box GNU cpio)
+  o Update instructions
+
+New for release 0.3 (2005-03-13)
+  o Convert from mmap to traditional buffered file reads in gzrecover
+  o Convert gzrecover to GPL licensing
+
+New for release 0.2 (2003-04-24)
+  o Compile with flags for large file support
+  o No longer crash if the gzip file is simply truncated (i.e. error
+    on last byte
+  o Enable split file support (-s)
+  o Fix typo in tar patch help text
+

@@ -1,0 +1,28 @@
+INSTALLATION:
+
+To build gzrecover, type "make" at the command line.  This will build the
+gzrecover executable.
+
+gzrecover relies on the zlib compression library which is not included in the
+distribution.  You can download it from http://www.gzip.org/zlib/ if you need
+it.  This needs to be installed before building gzrecover.  Most GNU/Linux
+system should already have this.
+
+To install the executable, copy it into the directory of your choice.  For
+example:
+
+cp gzrecover /usr/local/bin
+
+Or just run it out of the build directory. Certain Linux distributions,
+notably Debian based ones, have a package you can install for gzrecover.
+The package name is 'gzrt'.
+
+COPYRIGHT NOTICE 
+
+gzrecover written by Aaron M. Renn (arenn@urbanophile.com)
+Copyright (c) 2002-2012 Aaron M. Renn. 
+
+This code is licensed under the same GNU General Public License v2
+(or at your option, any later version) at GNU tar.  See
+http://www.gnu.org/licenses/gpl.html
+

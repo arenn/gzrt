@@ -1,0 +1,32 @@
+.TH GZRT 1 "July 13, 2006"
+.SH NAME
+gzrecover \- gzip recovery toolkit
+.SH SYNOPSIS
+.B gzrecover
+.RI [ options ] " file"
+.SH DESCRIPTION
+\fBgzrecover\fP will attempt to skip over corrupted data in
+a gzip archive, allowing the remaining data to be recovered.
+.SH OPTIONS
+.TP
+.B \-h
+.br
+Show usage statement.
+.TP
+.B \-v
+.br
+Turn on verbose mode.
+.TP
+.B \-s
+.br
+Turn on split mode.
+.TP
+.B \-o
+.I file
+.br
+Set the output file.
+.SH SEE ALSO
+.BR gzip (1),
+.BR cpio (1).
+.SH AUTHOR
+gzrecover was written by Aaron M. Renn <arenn@urbanophile.com>.
