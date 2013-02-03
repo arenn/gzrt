@@ -62,7 +62,7 @@ read_internal(int fd, void *buf, size_t count)
   for (;;)
     {
       rc = read(fd, buf, count);
-      if ((rc == -1) && (errno = EINTR))
+      if ((rc == -1) && (errno == EINTR))
         continue;
       return(rc);
     }

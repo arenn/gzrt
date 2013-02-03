@@ -1,4 +1,8 @@
-New for release 06. (2012-02-09)
+New for release 0.7 (2013-02-02)
+  o Fix =/== confusion in read_internal error check (via Shawn
+    Cokus (cokus@ucla.edu)
+
+New for release 0.6 (2012-02-09)
   o Patches from Paul Wise (pabs@debian.org) for stability and memory leaks
 
 New for release 0.5 (2006-08-29)
