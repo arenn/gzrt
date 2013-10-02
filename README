@@ -19,19 +19,28 @@ For compilation and installation instructions see README.build
 
 USAGE:
 
-gzrecover [ -hsv ] [-o <filename>] <filename> 
+gzrecover [ -hpsVv ] [-o <filename>] [filename] 
 
+If no input filename is specific, gzrecover reads from the standard input.
 By default, gzrecover writes its output to <filename>.recovered.  If the
-original filename ended in .gz, that extension is removed.  Options include:
+original filename ended in .gz, that extension is removed. The default 
+output filename when reading from the standard input is "stdin.recovered". 
+
+Options include:
 
 -o <name> - Sets the output file name
+-p        - Write output to standard output for pipeline support
 -s        - Splits each recovered segment into its own file,
             with numeric suffixes (.1, .2, etc) (UNTESTED)
 -h        - Print the help message
 -v        - Verbose logging on
+-V        - Print version number
 
-Note that gzrecover will run much more slowly than regular gunzip does.
-The more corruption in the file, the more slowly it runs.
+-o and -p cannot be specified at the same time.
+
+Note that gzrecover will run slower than regular gunzip does, but has
+been significantly inproved in speed since the last release.  The more 
+corruption in the file, the more slowly it runs.
 
 Running gzrecover on an uncorrupted gzip file should simply uncompress it.
 However, substituting gzrecover for gunzip on a regular basis is not
@@ -81,9 +90,9 @@ you encounter it with a file that isn't huge, let me know.
 COPYRIGHT NOTICE 
 
 gzrecover written by Aaron M. Renn (arenn@urbanophile.com)
-Copyright (c) 2002-2012 Aaron M. Renn. 
+Copyright (c) 2002-2013 Aaron M. Renn. 
 
 This code is licensed under the same GNU General Public License v2
-(or at your option, any later version) at GNU tar.  See
+(or at your option, any later version).  See
 http://www.gnu.org/licenses/gpl.html
 
