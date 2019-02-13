@@ -2,7 +2,7 @@
  * gzrecover - A program to recover data from corrupted gzip files
  *
  * Copyright (c) 2002-2013 Aaron M. Renn (arenn@urbanophile.com)
- *
+ * 2019 Giovanni M. de Castro
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published
  * by the Free Software Foundation, either version 2 of the License, or
@@ -28,7 +28,7 @@
 #include <string.h>
 #include <zlib.h>
 
-#define VERSION "0.8"
+#define VERSION "0.90"
 
 /* Global contants */
 #define DEFAULT_INBUF_SIZE (1024*1024)
@@ -133,7 +133,7 @@ init_zlib(z_stream *d_stream, unsigned char *buffer, size_t bufsize)
   d_stream->next_in = buffer;
   d_stream->avail_in = bufsize;
 
-  rc = inflateInit2(d_stream, -15); /* Don't ask why -15 - I don't know */
+  rc = inflateInit2(d_stream, 16+MAX_WBITS); /*To decompress a gzip format file with zlib, call inflateInit2 with the windowBits parameter as 16+MAX_WBITS (https://stackoverflow.com/questions/1838699/how-can-i-decompress-a-gzip-stream-with-zlib) */ 
   if (rc != Z_OK) { throw_error("inflateInit2"); }
 }
 
@@ -185,7 +185,7 @@ skip_gzip_header(z_stream *d_stream)
 int
 main(int argc, char **argv)
 {
-  int opt, rc, rc2, ifd, ofd, founderr=0, foundgood=0;
+  int64_t opt, rc, rc2, ifd, ofd, founderr=0, foundgood=0;
   ssize_t bytes_read=0, tot_written=0;
   off_t errpos=0, errinc=0, readpos=0;
   char *infile; 
@@ -276,8 +276,8 @@ main(int argc, char **argv)
   readpos = bytes_read;
 
   init_zlib(&d_stream, inbuf, bytes_read);
-  /* Assume there's a valid gzip header at the beginning of the file */
-  skip_gzip_header(&d_stream); 
+  /* Assume there's a valid gzip header at the beginning of the file AND BECAUSE OF THAT we do not skip it */
+  /* skip_gzip_header(&d_stream); */
 
   /* Finally - decompress this bad boy */
   for (;;)
@@ -306,8 +306,8 @@ main(int argc, char **argv)
               errpos = bytes_read - d_stream.avail_in;
 
               if (verbose_mode)
-                fprintf(stderr, "Found error at byte %d in input stream\n",
-                        (int)(readpos - (bytes_read - errpos)));
+                fprintf(stderr, "Found error at byte %ld in input stream\n",
+                        (int64_t)(readpos - (bytes_read - errpos)));
 
               if (d_stream.avail_in == 0)
                 {
@@ -333,12 +333,13 @@ main(int argc, char **argv)
            * either find a good byte, or exhaust it and have to re-read.
            */
           inflateEnd(&d_stream);
-	  ++errinc;
+          ++errinc;
 
           /* More left to try in our buffer */
           if (bytes_read > (size_t)(errpos+errinc) )
             {
-              init_zlib(&d_stream, inbuf+errpos+errinc, bytes_read - (errpos+errinc));
+              init_zlib(&d_stream, inbuf+errpos+errinc-2, bytes_read - (errpos+errinc-2)); 
+          /* In gzip, there may be headers inside the compressed file (\x1f\x8b\x08\...) and it complains of an error. Going 2 bytes back does the trick to perfectly inflate an uncorrupted 6GB gziped file like zcat [with inflateInit2(strm, 16+MAX_WBITS))] */
             }
           /* Nothing left in our buffer - read again */
           else
@@ -373,9 +374,9 @@ main(int argc, char **argv)
           founderr = 0;
           errinc = 0;
 
-	  if (verbose_mode)
-            fprintf(stderr, "Found good data at byte %d in input stream\n",
-                    (int)(readpos - (bytes_read - d_stream.avail_in)));
+          if (verbose_mode)
+            fprintf(stderr, "Found good data at byte %ld in input stream\n",
+                    (int64_t)(readpos - (bytes_read - d_stream.avail_in)));
 
           if (split_mode)
             {
@@ -422,7 +423,7 @@ main(int argc, char **argv)
                         tmppos + 1);
             }
 
-	  continue;
+          continue;
         }
     }
 
@@ -433,12 +434,11 @@ main(int argc, char **argv)
   close(ifd);
 
   if (verbose_mode)
-    fprintf(stderr, "Total decompressed output = %d bytes\n", 
-            (int)tot_written);
+    fprintf(stderr, "Total decompressed output = %ld bytes\n", 
+            (int64_t)tot_written);
 
   free(inbuf);
   free(outbuf);
 
   return(0); 
 }
-
