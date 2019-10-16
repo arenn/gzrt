@@ -28,8 +28,6 @@
 #include <string.h>
 #include <zlib.h>
 
-#define VERSION "0.8"
-
 /* Global contants */
 #define DEFAULT_INBUF_SIZE (1024*1024)
 #define DEFAULT_OUTBUF_SIZE (64*1024)
